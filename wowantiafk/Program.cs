@@ -79,26 +79,7 @@ namespace wowantiafk
 
             if (wowWindow != IntPtr.Zero)
             {
-                //GoFwdBckLftRght(wowWindow);
-
                 GoFwdBck(wowWindow);
-
-                //new Thread(new ThreadStart(() =>
-                //{
-                //    Random r = new Random();
-
-                //    while (true)
-                //    {
-                //        int sleep = 45000;
-                //        Thread.Sleep(sleep);
-
-                //        SendMessage(wowWindow, WM_KEYDOWN, MapVirtualKey('E', (uint)MapVirtualKeyMapTypes.MAPVK_VK_TO_CHAR), 0);
-                //        Thread.Sleep(1200);
-                //        SendMessage(wowWindow, WM_KEYUP, MapVirtualKey('E', (uint)MapVirtualKeyMapTypes.MAPVK_VK_TO_CHAR), 0);
-
-
-                //    }
-                //})).Start();
             }
             else
             {
@@ -108,7 +89,7 @@ namespace wowantiafk
 
         private static void GoFwdBck(IntPtr wowWindow)
         {
-            new Thread(new ThreadStart(() =>
+            new Thread(() =>
             {
                 Random r = new Random();
 
@@ -135,7 +116,7 @@ namespace wowantiafk
                     Thread.Sleep(sleep);
                     
                 }
-            })).Start();
+            }).Start();
         }
 
         private static void GoFwdBckLftRght(IntPtr wowWindow)

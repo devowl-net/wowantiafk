@@ -1,4 +1,0 @@
-D:\!MyProjects\wowantiafk\wowantiafk\bin\Debug\wowantiafk.exe
-D:\!MyProjects\wowantiafk\wowantiafk\bin\Debug\wowantiafk.pdb
-D:\!MyProjects\wowantiafk\wowantiafk\obj\x86\Debug\wowantiafk.exe
-D:\!MyProjects\wowantiafk\wowantiafk\obj\x86\Debug\wowantiafk.pdb
