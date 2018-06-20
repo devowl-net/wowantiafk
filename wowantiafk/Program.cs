@@ -29,6 +29,7 @@ namespace wowantiafk
 
         private static void Main()
         {
+            Console.Title = "Anti-AFK for World of Warcraft [by Ярославиус-СтражСмерти] [www.devowl.net]";
             var wowHandlers = GetWowWindowHandlers().ToArray();
 
             if (!wowHandlers.Any())
