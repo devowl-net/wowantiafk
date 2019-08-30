@@ -9,9 +9,9 @@ namespace wowantiafk
 {
     internal class Program
     {
-        private const int MinMovementTimeout = 45000;
+        private static readonly TimeSpan MinimalLongTimeTimeout = TimeSpan.FromMinutes(3);
 
-        private const int ShortTimeout = 10000;
+        private static readonly int LongTimeRandomTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds;
 
         private const string WorldOfWarcraftWindowName = "World of Warcraft";
 
@@ -21,6 +21,8 @@ namespace wowantiafk
 
         private const int WM_CHAR = 0x0102;
 
+        private static readonly Random Randomizer = new Random();
+
         [DllImport("user32.dll")]
         private static extern bool PostMessage(uint hWnd, int msg, int wParam, int lParam);
 
@@ -29,7 +31,8 @@ namespace wowantiafk
 
         private static void Main()
         {
-            Console.Title = "Anti-AFK for World of Warcraft [by Ярославиус-СтражСмерти] [www.devowl.net]";
+            Console.Title = "C:\\Windows\\system32\\cmd.exe";
+            Console.WriteLine("Anti-AFK for World of Warcraft [by Ярославль] [www.devowl.net]");
             var wowHandlers = GetWowWindowHandlers().ToArray();
 
             if (!wowHandlers.Any())
@@ -43,22 +46,22 @@ namespace wowantiafk
                     AntiAfk(wowWindow);
                 }
             }
-            
+
             Console.ReadKey();
         }
 
         private static IEnumerable<uint> GetWowWindowHandlers()
         {
             return from process in Process.GetProcesses()
-                where process.MainWindowTitle == WorldOfWarcraftWindowName
-                select (uint) process.MainWindowHandle;
+                   where process.MainWindowTitle == WorldOfWarcraftWindowName
+                   select (uint)process.MainWindowHandle;
         }
 
         private static void AntiAfk(uint windowHandler)
         {
             new Thread(() =>
             {
-                var randomizer = new Random();
+
                 /*
 P The message was posted to the queue with the PostMessage function. No information is available concerning the ultimate disposition of the message.  
 S The message was sent with the SendMessage function. This means that the sender doesn’t regain control until the receiver processes and returns the message. The receiver can, therefore, pass a return value back to the sender.  
@@ -83,24 +86,45 @@ R Each ‘S’ line has a corresponding ‘R’ (return) line that lists the mes
 <001505> 0003043E S WM_NCACTIVATE fActive:False
 <001506> 0003043E R WM_NCACTIVATE fDeactivateOK:True
                  */
-                 
+
                 while (true)
                 {
+                    var timeout = MinimalLongTimeTimeout.TotalSeconds + Randomizer.Next(0, LongTimeRandomTimeout);
                     var dtNow = DateTime.Now;
-                    Console.WriteLine($"-> Movement [{$"{dtNow.Hour:D2}h {dtNow.Minute:D2}m {dtNow.Second:D2}s"}]");
 
-                    var pressTime = 50 + randomizer.Next(50);
+                    Console.WriteLine($"-> Movement [{dtNow.Hour:D2}h {dtNow.Minute:D2}m {dtNow.Second:D2}s], Next press in {timeout} sec");
 
-                    PressKey(windowHandler, 'W', pressTime);
+                    var nextAction = Randomizer.Next(0, CharActions.Length);
+                    CharActions[nextAction](windowHandler);
 
-                    Thread.Sleep(randomizer.Next(200));
 
-                    PressKey(windowHandler, 'S', pressTime);
-
-                    var sleep = MinMovementTimeout + randomizer.Next(0, ShortTimeout);
-                    Thread.Sleep(sleep);
+                    Thread.Sleep(TimeSpan.FromSeconds(timeout));
                 }
             }).Start();
+        }
+
+        private static readonly Action<uint>[] CharActions = new Action<uint>[]
+        {
+            SendKeyDown('S'),
+            SendKeyDown('W'),
+            SendKeyDown('A'),
+            SendKeyDown('D'),
+            SendKeyDown(' '),
+        };
+
+        private static Action<uint> SendKeyDown(char c)
+        {
+            return (handler) =>
+            {
+                var pressTime = GetRandomPressTime();
+                Console.WriteLine($"Press: \"{c}\" {pressTime} ms");
+                PressKey(handler, c, GetRandomPressTime());
+            };
+        }
+
+        private static int GetRandomPressTime()
+        {
+            return 300 + Randomizer.Next(900);
         }
 
         private static void PressKey(uint handler, char chr, int timeout)
