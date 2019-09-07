@@ -9,9 +9,9 @@ namespace wowantiafk
 {
     internal class Program
     {
-        private static readonly TimeSpan MinimalLongTimeTimeout = TimeSpan.FromMinutes(3);
+        private static readonly TimeSpan MinimalLongTimeTimeout = TimeSpan.FromMinutes(1);
 
-        private static readonly int LongTimeRandomTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds;
+        private static readonly int LongTimeRandomTimeout = (int)TimeSpan.FromMinutes(5).TotalSeconds;
 
         private const string WorldOfWarcraftWindowName = "World of Warcraft";
 
